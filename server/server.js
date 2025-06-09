@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Dev frontend
-      //"https://...", // Prod frontend
+      "https://fino-bwmc.onrender.com", // Prod frontend
     ],
     methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
     credentials: true,
