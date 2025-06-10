@@ -1,80 +1,175 @@
-// import  { useEffect } from "react";
+// import { useEffect, useRef } from "react";
+// import toast from "react-hot-toast";
+// import { Trash2 } from "lucide-react";
 
-// const GoalList = ({ goals }) => {
+// const GoalList = ({ goals, onDelete, loading }) => {
+//   const alertedGoals = useRef(new Set());
+
 //   useEffect(() => {
-//     // Show toast alerts for any completed goals
-//     goals.forEach((goal) => {
-//       if (goal.currentAmount >= goal.targetAmount) {
-//        // toast.success(`🎉 Goal "${goal.title}" accomplished!`);
+//     for (const goal of goals) {
+//       const isCompleted = goal.currentAmount >= goal.targetAmount;
+//       const alreadyAlerted = alertedGoals.current.has(goal._id);
+
+//       if (isCompleted && !alreadyAlerted) {
+//         alertedGoals.current.add(goal._id);
+//         toast.success(`🎉 Goal "${goal.title}" accomplished!`, {
+//           id: `goal-${goal._id}`,
+//         });
 //       }
-//     });
+//     }
 //   }, [goals]);
 
-//   const getProgressColor = (percentage) => {
-//     if (percentage >= 100) return "bg-green-600";
-//     if (percentage >= 75) return "bg-yellow-400";
-//     if (percentage >= 40) return "bg-blue-500";
-//     return "bg-red-500";
+//   const confirmDelete = (goal) => {
+//     toast(
+//       (t) => (
+//         <span className="flex flex-col gap-2">
+//           <span>
+//             Are you sure you want to delete "<b>{goal.title}</b>"?
+//           </span>
+//           <div className="flex gap-2 justify-end">
+//             <button
+//               onClick={() => {
+//                 onDelete(goal._id);
+//                 toast.dismiss(t.id);
+//               }}
+//               className="bg-red-600 text-white px-4 py-2 rounded text-sm"
+//               disabled={loading}
+//             >
+//               Confirm
+//             </button>
+//             <button
+//               onClick={() => toast.dismiss(t.id)}
+//               className="border px-4 py-2 rounded text-sm"
+//               disabled={loading}
+//             >
+//               Cancel
+//             </button>
+//           </div>
+//         </span>
+//       ),
+//       { duration: Infinity }
+//     );
+//   };
+
+//   const formatDate = (dateStr) => {
+//     if (!dateStr) return "No deadline";
+//     const options = { year: "numeric", month: "short", day: "numeric" };
+//     return new Date(dateStr).toLocaleDateString(undefined, options);
+//   };
+
+//   const getProgressColor = (percent) => {
+//     if (percent >= 100) {
+//       return "linear-gradient(90deg, #22c55e, #16a34a)"; // Completed - Green
+//     } else if (percent >= 75) {
+//       return "linear-gradient(90deg, #facc15, #f59e0b)"; // Amber/Gold
+//     } else if (percent >= 50) {
+//       return "linear-gradient(90deg, #0ea5e9, #0284c7)"; // Sky Blue
+//     } else if (percent >= 25) {
+//       return "linear-gradient(90deg, #38bdf8, #60a5fa)"; // Light Blue
+//     } else {
+//       return "linear-gradient(90deg, #cbd5e1, #94a3b8)"; // Soft Gray/Blue
+//     }
 //   };
 
 //   return (
-//     <div className="space-y-6">
-//       {goals.length === 0 && (
-//         <p className="text-gray-500 italic text-center">No goals found.</p>
+//     <div className="relative" role="list">
+//       {loading && (
+//         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 overflow-hidden rounded-t">
+//           <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-700 to-blue-900 animate-[loadingBar_2s_linear_infinite]" />
+//           <style>{`
+//             @keyframes loadingBar {
+//               0% { transform: translateX(-100%); }
+//               100% { transform: translateX(100%); }
+//             }
+//           `}</style>
+//         </div>
 //       )}
 
-//       {goals.map((goal) => {
-//         const percentage = Math.min(
-//           (goal.currentAmount / goal.targetAmount) * 100,
-//           100
-//         );
+//       <div className={`${loading ? "pt-2" : ""} space-y-6`}>
+//         {goals.length === 0 && (
+//           <p className="text-gray-500 italic text-center">No goals found.</p>
+//         )}
 
-//         const isCompleted = percentage >= 100;
+//         {goals.map((goal) => {
+//           const percentage = Math.min(
+//             (goal.currentAmount / goal.targetAmount) * 100,
+//             100
+//           );
+//           const isCompleted = percentage >= 100;
+//           const progressColor = getProgressColor(percentage);
 
-//         return (
-//           <div
-//             key={goal._id}
-//             className={`p-6 border rounded shadow bg-white transition-transform duration-300 ${
-//               isCompleted ? "ring-4 ring-green-400 scale-105" : "hover:scale-105"
-//             }`}
-//             role="listitem"
-//           >
-//             <div className="flex items-center justify-between mb-2">
-//               <h4
-//                 className={`font-semibold text-lg ${
-//                   isCompleted ? "text-green-700" : ""
+//           return (
+//             <div
+//               key={goal._id}
+//               className={`relative p-6 border rounded-lg shadow-lg bg-white transition-transform duration-300 ${
+//                 isCompleted
+//                   ? "ring-2 ring-green-500 scale-105"
+//                   : "hover:scale-105"
+//               }`}
+//               role="listitem"
+//             >
+//               {/* Delete Button */}
+//               <button
+//                 onClick={() => confirmDelete(goal)}
+//                 className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+//                 title="Delete Goal"
+//                 disabled={loading}
+//               >
+//                 <Trash2 size={18} />
+//               </button>
+
+//               {/* Goal Title and Status */}
+//               <div className="flex items-center justify-between mb-1 pr-6">
+//                 <h4
+//                   className={`font-semibold text-lg ${
+//                     isCompleted ? "text-green-700" : "text-blue-800"
+//                   }`}
+//                 >
+//                   {goal.title}
+//                 </h4>
+//                 {isCompleted && (
+//                   <span className="text-green-700 font-bold text-sm bg-green-100 px-2 py-1 rounded-full select-none">
+//                     🎉 Completed
+//                   </span>
+//                 )}
+//               </div>
+
+//               {/* Deadline and Amounts */}
+//               <p className="text-sm text-gray-600 mb-1">
+//                 Deadline:{" "}
+//                 <span className="font-medium text-blue-800">
+//                   {formatDate(goal.deadline)}
+//                 </span>
+//               </p>
+
+//               <p className="text-sm text-gray-600 mb-2">
+//                 Target: ₹{goal.targetAmount.toLocaleString("en-IN")}, Saved: ₹
+//                 {goal.currentAmount.toLocaleString("en-IN")}
+//               </p>
+
+//               {/* Progress Bar */}
+//               <div className="w-full bg-gray-200 rounded-xl h-6 overflow-hidden">
+//                 <div
+//                   className="h-6 rounded-xl transition-all duration-700 ease-in-out"
+//                   style={{
+//                     width: `${percentage}%`,
+//                     background: progressColor,
+//                   }}
+//                 />
+//               </div>
+
+//               {/* Percentage */}
+//               <p
+//                 className={`text-sm text-right mt-2 font-medium ${
+//                   isCompleted ? "text-green-700" : "text-gray-600"
 //                 }`}
 //               >
-//                 {goal.title}
-//               </h4>
-//               {isCompleted && (
-//                 <span className="text-green-700 font-bold text-sm bg-green-100 px-2 py-1 rounded-full select-none">
-//                   🎉 Completed
-//                 </span>
-//               )}
+//                 {Math.round(percentage)}%
+//               </p>
 //             </div>
-//             <p className="text-sm text-gray-600 mb-2">
-//               Target: ${goal.targetAmount.toLocaleString("en-IN")}, Saved: $
-//               {goal.currentAmount.toLocaleString("en-IN")}
-//             </p>
-//             <div className="w-full bg-gray-200 rounded h-4 overflow-hidden">
-//               <div
-//                 className={`${getProgressColor(
-//                   percentage
-//                 )} h-4 rounded transition-all duration-500 ease-in-out`}
-//                 style={{ width: `${percentage}%` }}
-//               />
-//             </div>
-//             <p
-//               className={`text-sm text-right mt-1 ${
-//                 isCompleted ? "text-green-700 font-semibold" : "text-gray-500"
-//               }`}
-//             >
-//               {Math.round(percentage)}%
-//             </p>
-//           </div>
-//         );
-//       })}
+//           );
+//         })}
+//       </div>
 //     </div>
 //   );
 // };
@@ -84,6 +179,7 @@
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { Trash2 } from "lucide-react";
+import { FaBullseye } from "react-icons/fa";
 
 const GoalList = ({ goals, onDelete, loading }) => {
   const alertedGoals = useRef(new Set());
@@ -115,14 +211,14 @@ const GoalList = ({ goals, onDelete, loading }) => {
                 onDelete(goal._id);
                 toast.dismiss(t.id);
               }}
-              className="bg-red-600 text-white px-3 py-1 rounded text-sm"
+              className="bg-red-600 text-white px-4 py-2 rounded text-sm"
               disabled={loading}
             >
               Confirm
             </button>
             <button
               onClick={() => toast.dismiss(t.id)}
-              className="border px-3 py-1 rounded text-sm"
+              className="border px-4 py-2 rounded text-sm"
               disabled={loading}
             >
               Cancel
@@ -130,7 +226,7 @@ const GoalList = ({ goals, onDelete, loading }) => {
           </div>
         </span>
       ),
-      { duration: 10000 }
+      { duration: Infinity }
     );
   };
 
@@ -140,23 +236,46 @@ const GoalList = ({ goals, onDelete, loading }) => {
     return new Date(dateStr).toLocaleDateString(undefined, options);
   };
 
+  const getProgressColor = (percent) => {
+    if (percent >= 100) {
+      return "linear-gradient(90deg, #22c55e, #16a34a)"; // Completed - Green
+    } else if (percent >= 75) {
+      return "linear-gradient(90deg, #facc15, #f59e0b)"; // Amber/Gold
+    } else if (percent >= 50) {
+      return "linear-gradient(90deg, #0ea5e9, #0284c7)"; // Sky Blue
+    } else if (percent >= 25) {
+      return "linear-gradient(90deg, #38bdf8, #60a5fa)"; // Light Blue
+    } else {
+      return "linear-gradient(90deg, #cbd5e1, #94a3b8)"; // Soft Gray/Blue
+    }
+  };
+
   return (
     <div className="relative" role="list">
       {loading && (
-        <div className="absolute top-0 left-0 w-full h-1 bg-[#66A3FF] overflow-hidden rounded-t">
-          <div className="h-1 bg-[#007ACC] animate-[loadingBar_2s_linear_infinite]" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-300 via-blue-500 to-blue-700 overflow-hidden rounded-t">
+          <div className="h-1 bg-gradient-to-r from-blue-500 via-blue-700 to-blue-900 animate-[loadingBar_2s_linear_infinite]" />
           <style>{`
-          @keyframes loadingBar {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-          }
-        `}</style>
+            @keyframes loadingBar {
+              0% { transform: translateX(-100%); }
+              100% { transform: translateX(100%); }
+            }
+          `}</style>
         </div>
       )}
 
       <div className={`${loading ? "pt-2" : ""} space-y-6`}>
-        {goals.length === 0 && (
-          <p className="text-[#7E909A] italic text-center">No goals found.</p>
+        {goals.length === 0 && !loading && (
+          <div className="text-center flex flex-col items-center gap-4 p-6 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+            <FaBullseye className="text-5xl text-blue-500" />
+            <h2 className="text-xl font-semibold text-blue-700">
+              Set your first goal!
+            </h2>
+            <p className="text-sm text-gray-600 max-w-md">
+              Every journey starts with a single step. Start tracking your goals
+              today and take control of your financial future.
+            </p>
+          </div>
         )}
 
         {goals.map((goal) => {
@@ -165,21 +284,19 @@ const GoalList = ({ goals, onDelete, loading }) => {
             100
           );
           const isCompleted = percentage >= 100;
-
-          const progressColor = isCompleted
-            ? "#16A34A"
-            : `rgba(0, 122, 204, ${percentage / 100})`;
+          const progressColor = getProgressColor(percentage);
 
           return (
             <div
               key={goal._id}
-              className={`relative p-6 border rounded shadow bg-white transition-transform duration-300 ${
+              className={`relative p-6 border rounded-lg shadow-lg bg-white transition-transform duration-300 ${
                 isCompleted
-                  ? "ring-2 ring-green-400 scale-105"
+                  ? "ring-2 ring-green-500 scale-105"
                   : "hover:scale-105"
               }`}
               role="listitem"
             >
+              {/* Delete Button */}
               <button
                 onClick={() => confirmDelete(goal)}
                 className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -189,10 +306,11 @@ const GoalList = ({ goals, onDelete, loading }) => {
                 <Trash2 size={18} />
               </button>
 
+              {/* Goal Title and Status */}
               <div className="flex items-center justify-between mb-1 pr-6">
                 <h4
                   className={`font-semibold text-lg ${
-                    isCompleted ? "text-green-700" : "text-[#003366]"
+                    isCompleted ? "text-green-700" : "text-blue-800"
                   }`}
                 >
                   {goal.title}
@@ -204,32 +322,34 @@ const GoalList = ({ goals, onDelete, loading }) => {
                 )}
               </div>
 
-              <p className="text-sm text-[#4A6572] mb-1">
+              {/* Deadline and Amounts */}
+              <p className="text-sm text-gray-600 mb-1">
                 Deadline:{" "}
-                <span className="font-medium text-[#003366]">
+                <span className="font-medium text-blue-800">
                   {formatDate(goal.deadline)}
                 </span>
               </p>
 
-              <p className="text-sm text-[#4A6572] mb-2">
+              <p className="text-sm text-gray-600 mb-2">
                 Target: ₹{goal.targetAmount.toLocaleString("en-IN")}, Saved: ₹
                 {goal.currentAmount.toLocaleString("en-IN")}
               </p>
 
-              <div className="w-full bg-[#E6F0FF] rounded h-5 overflow-hidden">
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-200 rounded-xl h-6 overflow-hidden">
                 <div
-                  className="h-5 rounded transition-all duration-700 ease-in-out"
+                  className="h-6 rounded-xl transition-all duration-700 ease-in-out"
                   style={{
                     width: `${percentage}%`,
-                    backgroundColor: progressColor,
+                    background: progressColor,
                   }}
                 />
               </div>
+
+              {/* Percentage */}
               <p
-                className={`text-sm text-right mt-1 ${
-                  isCompleted
-                    ? "text-green-700 font-semibold"
-                    : "text-[#7E909A]"
+                className={`text-sm text-right mt-2 font-medium ${
+                  isCompleted ? "text-green-700" : "text-gray-600"
                 }`}
               >
                 {Math.round(percentage)}%

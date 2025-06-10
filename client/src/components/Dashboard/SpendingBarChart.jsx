@@ -47,7 +47,10 @@ const SpendingBarChart = ({ data }) => {
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-md w-full max-w-4xl mx-auto">
-      <Bar data={barData} />
+      {/* Responsive height container */}
+      <div className="relative h-[300px] sm:h-[400px] md:h-[500px]">
+        <Bar data={barData} options={{ maintainAspectRatio: false }} />
+      </div>
     </div>
   );
 };

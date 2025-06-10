@@ -298,7 +298,7 @@ const BudgetForm = ({ onBudgetSaved, editingBudget }) => {
         </div>
 
         {/* Submit button */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <button
             type="submit"
             disabled={loading}
@@ -328,10 +328,10 @@ const BudgetForm = ({ onBudgetSaved, editingBudget }) => {
             )}
             {editingBudget
               ? loading
-                ? "Updating..."
+                ? "Updating"
                 : "Update"
               : loading
-              ? "Saving..."
+              ? "Saving"
               : "Add"}
           </button>
           <button

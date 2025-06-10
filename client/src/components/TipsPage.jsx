@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import {
   FaLightbulb,
   FaExclamationTriangle,
   FaCheckCircle,
 } from "react-icons/fa";
-import Footer from "./Footer";
+import { Loader2 } from "lucide-react";
+
 const TipsPage = () => {
   const [tips, setTips] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,15 +51,17 @@ const TipsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5]">
+    <div className="flex flex-col min-h-screen bg-[#F5F5F5]">
       <Navbar />
-      <main className="max-w-4xl mx-auto p-6">
+      <main className="flex-grow max-w-4xl mx-auto p-6 w-full">
         <h2 className="text-4xl font-extrabold text-[#003366] mb-10 text-center select-none">
           Financial Tips
         </h2>
 
         {loading ? (
-          <p className="text-center text-[#7E909A] italic">Loading tips...</p>
+          <div className="flex justify-center items-center min-h-[200px]">
+            <Loader2 className="animate-spin text-[#003366] w-8 h-8" />
+          </div>
         ) : tips.length === 0 ? (
           <p className="text-center text-[#7E909A] italic">
             No tips available.

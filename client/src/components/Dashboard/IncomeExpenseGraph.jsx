@@ -371,7 +371,7 @@ const IncomeExpenseGraph = () => {
       },
       y: {
         beginAtZero: true,
-        title: { display: true, text: "Amount" },
+        title: { display: false },
         ticks: {
           callback: (value) => `₹${value.toLocaleString("en-IN")}`,
           stepSize: 10000,

@@ -346,47 +346,15 @@ const Goals = () => {
         </section>
 
         <section className="bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-2xl font-semibold text-[#003366] mb-4">
+          <h2 className="text-2xl font-semibold text-[#003366] mb-4">
             Goal List
-          </h3>
-          {fetching ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "40px 0",
-              }}
-              aria-label="Loading goals"
-            >
-              <div
-                style={{
-                  border: "4px solid #e0e0e0",
-                  borderTop: "4px solid #007ACC",
-                  borderRadius: "50%",
-                  width: 40,
-                  height: 40,
-                  animation: "spin 1s linear infinite",
-                }}
-              />
-              <style>{`
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `}</style>
-            </div>
-          ) : error ? (
-            <p className="text-center text-[#D32D41] font-semibold">{error}</p>
-          ) : goals.length === 0 ? (
-            <p className="text-center italic text-[#7E909A]">No goals yet.</p>
-          ) : (
-            <GoalList
-              goals={goals}
-              onDelete={handleDeleteGoal}
-              loading={loading}
-            />
-          )}
+          </h2>
+          <GoalList
+            fetching={fetching}
+            goals={goals}
+            onDelete={handleDeleteGoal}
+            loading={loading}
+          />
         </section>
       </div>
       <Footer />

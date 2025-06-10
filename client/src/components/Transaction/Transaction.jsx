@@ -657,43 +657,20 @@ const Transaction = () => {
     }
   };
 
+  // Actual delete logic
   const handleDelete = async (id) => {
-    toast(
-      (t) => (
-        <span className="flex flex-col gap-2 text-sm">
-          <span>Are you sure you want to delete this transaction?</span>
-          <div className="flex justify-end gap-3 mt-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1 rounded text-gray-600 hover:text-black"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                const deleting = toast.loading("Deleting...");
-                try {
-                  await axios.delete(
-                    `${import.meta.env.VITE_API_BASE_URL}transactions/${id}`,
-                    config
-                  );
-                  setTransactions((prev) => prev.filter((tx) => tx._id !== id));
-                  toast.success("Transaction deleted", { id: deleting });
-                } catch (error) {
-                  console.error("Error deleting transaction:", error);
-                  toast.error("Failed to delete transaction", { id: deleting });
-                }
-              }}
-              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-              Delete
-            </button>
-          </div>
-        </span>
-      ),
-      { duration: 10000 }
-    );
+    const deletingToast = toast.loading("Deleting...");
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}transactions/${id}`,
+        config
+      );
+      setTransactions((prev) => prev.filter((tx) => tx._id !== id));
+      toast.success("Transaction deleted", { id: deletingToast });
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction", { id: deletingToast });
+    }
   };
 
   return (

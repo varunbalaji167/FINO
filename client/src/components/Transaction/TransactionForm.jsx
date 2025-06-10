@@ -283,51 +283,47 @@ const TransactionForm = ({ goals, onAdd, loading }) => {
           rows={3}
         />
       </div>
-
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          style={{
-            backgroundColor: "#003366",
-            color: "white",
-            fontWeight: "600",
-            padding: "12px 24px",
-            borderRadius: 6,
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            opacity: loading ? 0.6 : 1,
-            transition: "background-color 0.3s ease",
-          }}
+          className={`w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-6 font-semibold rounded-md shadow-md transition-all duration-300 ${
+            loading
+              ? "bg-[#003366] opacity-60 cursor-not-allowed"
+              : "bg-[#003366] hover:bg-[#007ACC] text-white"
+          }`}
         >
           {loading && (
-            <div
-              style={{
-                border: "3px solid #e0e0e0",
-                borderTop: "3px solid white",
-                borderRadius: "50%",
-                width: 16,
-                height: 16,
-                animation: "spin 1s linear infinite",
-              }}
-            />
+            <svg
+              className="animate-spin h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
           )}
-          Add
-          <style>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}</style>
+          {loading ? "Saving..." : "Add"}
         </button>
+
+        {/* Cancel Button */}
         <button
           type="button"
           onClick={handleReset}
-          className="bg-gray-300 text-[#242C34] font-medium py-3 px-6 rounded-md hover:bg-gray-400 transition"
+          className="w-full sm:w-auto bg-gray-300 text-[#242C34] font-medium py-3 px-6 rounded-md hover:bg-gray-400 transition"
         >
           Cancel
         </button>

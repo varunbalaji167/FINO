@@ -165,7 +165,7 @@ const GoalForm = ({
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
           <button
             type="submit"
             disabled={loading}
@@ -193,7 +193,7 @@ const GoalForm = ({
                 ></path>
               </svg>
             )}
-            {loading ? "Creating..." : "Create"}
+            {loading ? "Creating" : "Create"}
           </button>
 
           <button

@@ -1,10 +1,31 @@
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
+import { FaPiggyBank } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const SpendingPieChart = ({ spendingByCategory }) => {
+  const navigate = useNavigate();
+
   if (!spendingByCategory.length) {
-    return <p>No expense data available to display.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center p-6 bg-gray-50 rounded-lg shadow-md text-center">
+        <FaPiggyBank className="text-pink-500 text-5xl mb-4 animate-bounce" />
+        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+          No spending data yet!
+        </h2>
+        <p className="text-sm text-gray-500">
+          Start tracking your expenses to see your spending habits visualized
+          here.
+        </p>
+        <button
+          className="mt-4 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded transition duration-200"
+          onClick={() => navigate("/transactions")}
+        >
+          Add your first expense
+        </button>
+      </div>
+    );
   }
 
   const pieData = {

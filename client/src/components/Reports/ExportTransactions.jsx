@@ -1,10 +1,22 @@
 import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { FaFileExport, FaWallet } from "react-icons/fa";
 
 const ExportTransactions = ({ transactions, goals }) => {
   if (!transactions || transactions.length === 0) {
-    return <p>No transactions to export</p>;
+    return (
+      <div className="text-center py-12 px-4 flex flex-col items-center gap-4 bg-blue-50 rounded-lg border border-gray-200 shadow-sm">
+        <FaWallet className="text-5xl text-blue-500" />
+        <h3 className="text-lg font-semibold text-blue-700">
+          No transactions to export... yet!
+        </h3>
+        <p className="text-sm text-gray-600 max-w-sm">
+          Start recording your income and expenses to generate insightful
+          reports. Your financial journey begins with one entry!
+        </p>
+      </div>
+    );
   }
 
   // Format data for CSV and PDF with goal title
