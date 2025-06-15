@@ -17,6 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Dev frontend
+      "https://fino-sigma.vercel.app",
       "https://fino-bwmc.onrender.com", // Prod frontend
     ],
     methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
